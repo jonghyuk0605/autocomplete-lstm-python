@@ -40,5 +40,12 @@ for epoch in range(args.n_epochs):
         losses.append(loss)
         print "Epoch {} ({} / {}), loss: {}".format(epoch, idx, n_batch, loss)
     writer.add_summary(sess.run(loss_summary, feed_dict = {loss_log: np.mean(losses)}))
-    if epoch % 10 == 0:
-        saver.save(sess, 'save/model')
+
+    saver.save(sess, 'save/model')
+
+    output, x, current_state = [], train_loader.vocab.get(unichr(32)), model.initial_rnn_state(1)
+    for _ in range(100):
+        x, current_state = model.sample_output(sess, x, current_state)
+        output.append(x)
+    output = list(map(train_loader.inv_vocab.get, output))
+    print utils.join_data(output, args.text_modeling)

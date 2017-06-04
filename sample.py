@@ -14,6 +14,8 @@ seq_len = 100
 hidden_size = 128
 vocab_dir = 'data/korean-english-park.train.ko.chr.vocab.pkl'
 
+prefix = u" "+prefix
+
 with open(vocab_dir, 'rb') as f:
     vocab = pickle.load(f)
     inv_vocab = pickle.load(f)
