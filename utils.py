@@ -53,13 +53,22 @@ class BatchGenerator():
 def split_raw(raw_data, text_modeling):
     if text_modeling == 'chr':
         data = []
-        for c in raw_data:
-            # only takes ascii or full korean syllable
-            # 0x3131 ~ 0x3163: jamos, 0xac00 ~ 0xd7a3: full character
-            if ord(c) < 128 or (0xac00 <= ord(c) <= 0xd7a3):
-                data.extend(split_syllables(c))
-    elif text_modeling == 'tok':
-        pass # TODO: twitter korean tokenizer
+        for spl_data in raw_data.split():
+            for c in spl_data:
+                # only takes . and , and full korean syllable
+                # 0x3131 ~ 0x3163: jamos, 0xac00 ~ 0xd7a3: full character
+                if (ord(c) in ['.', ',']) or (0xac00 <= ord(c) <= 0xd7a3):
+                    data.extend(split_syllables(c))
+            data.append(u' ') # delimeter
+    elif text_modeling == 'syl':
+        data = []
+        for spl_data in raw_data.split():
+            for c in spl_data:
+                # only takes . and , and full korean syllable
+                # 0x3131 ~ 0x3163: jamos, 0xac00 ~ 0xd7a3: full character
+                if (ord(c) in ['.', ',']) or (0xac00 <= ord(c) <= 0xd7a3):
+                    data.append(c)
+            data.append(u' ') # delimeter
     else:
         print 'Invalid text modeling'
     return data
@@ -67,12 +76,13 @@ def split_raw(raw_data, text_modeling):
 def join_data(data, text_modeling):
     if text_modeling == 'chr':
         raw_data = join_jamos(data)
-    elif text_modeling == 'tok':
-        pass # TODO: twitter korean tokenizer
+    elif text_modeling == 'syl':
+        raw_data = u''.join(data)
     else:
         print 'Invalid text modeling'
     return raw_data
 
 if __name__ == "__main__":
     # test
-    b = BatchGenerator('chr', 'data/korean-english-park.train.ko')
+    #b = BatchGenerator('chr', 'data/korean-english-park.train.ko')
+    b = BatchGenerator('syl', 'data/korean-english-park.train.ko')

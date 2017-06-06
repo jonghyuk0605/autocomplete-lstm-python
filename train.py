@@ -5,7 +5,7 @@ import models
 import utils
 
 flags = tf.app.flags
-flags.DEFINE_string('text_modeling', 'chr', 'chr: character-based, tok: tokenized')
+flags.DEFINE_string('text_modeling', 'chr', 'chr: character-based, syl: syllable')
 flags.DEFINE_string('train_dir', 'data/korean-english-park.train.ko', 'training dataset')
 flags.DEFINE_float('alpha', 1e-4, 'alpha for adam')
 flags.DEFINE_float('grad_clip', 5., 'gradient clip')
