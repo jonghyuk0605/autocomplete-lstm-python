@@ -7,6 +7,8 @@ import utils
 flags = tf.app.flags
 flags.DEFINE_string('text_modeling', 'chr', 'chr: character-based, syl: syllable')
 flags.DEFINE_string('train_dir', 'data/korean-english-park.train.ko', 'training dataset')
+flags.DEFINE_string('save_dir', 'save/model', 'training dataset')
+flags.DEFINE_string('log_dir', 'log', 'training dataset')
 flags.DEFINE_float('alpha', 1e-4, 'alpha for adam')
 flags.DEFINE_float('grad_clip', 5., 'gradient clip')
 flags.DEFINE_integer('hidden_size', 128, 'hidden size')
@@ -25,7 +27,7 @@ gradients, _ = tf.clip_by_global_norm(gradients, args.grad_clip)
 train_op = optimizer.apply_gradients(zip(gradients, variables))
 
 sess = tf.Session()
-writer = tf.summary.FileWriter('log/', sess.graph)
+writer = tf.summary.FileWriter(args.log_dir, sess.graph)
 loss_log = tf.placeholder(tf.float32, name='loss_log')
 loss_summary = tf.summary.scalar('loss_summary', loss_log)
 sess.run(tf.global_variables_initializer())
@@ -41,11 +43,12 @@ for epoch in range(args.n_epochs):
         print "Epoch {} ({} / {}), loss: {}".format(epoch, idx, n_batch, loss)
     writer.add_summary(sess.run(loss_summary, feed_dict = {loss_log: np.mean(losses)}))
 
-    saver.save(sess, 'save/model')
+    saver.save(sess, args.save_dir)
 
     output, x, current_state = [], train_loader.vocab.get(unichr(32)), model.initial_rnn_state(1)
     for _ in range(100):
         x, current_state = model.sample_output(sess, x, current_state)
         output.append(x)
     output = list(map(train_loader.inv_vocab.get, output))
+    print output
     print utils.join_data(output, args.text_modeling)
