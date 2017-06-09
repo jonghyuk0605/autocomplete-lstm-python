@@ -10,7 +10,7 @@ import utils
 
 flags = tf.app.flags
 flags.DEFINE_string('text_modeling', 'chr', 'chr: character-based, syl: syllable')
-flags.DEFINE_string('load_dir', 'save/model', 'model to load')
+flags.DEFINE_string('load_dir', 'save/model_0.ckpt', 'model to load')
 flags.DEFINE_string('vocab_dir', 'data/korean-english-park.train.ko.chr.vocab.pkl', 'vocab dir')
 flags.DEFINE_integer('seq_length', 100, 'length of seq to sample')
 flags.DEFINE_integer('hidden_size', 128, 'hidden_size for constructing model')

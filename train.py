@@ -41,7 +41,7 @@ for epoch in range(args.n_epochs):
         loss = model.run_train_op(sess, train_op, batch_x, batch_y, model.initial_rnn_state(args.batch_size))
         losses.append(loss)
         print "Epoch {} ({} / {}), loss: {}".format(epoch, idx, n_batch, loss)
-    writer.add_summary(sess.run(loss_summary, feed_dict = {loss_log: np.mean(losses)}))
+    writer.add_summary(sess.run(loss_summary, feed_dict = {loss_log: np.mean(losses)}), epoch)
 
     saver.save(sess, args.save_dir)
 

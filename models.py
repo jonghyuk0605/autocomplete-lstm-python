@@ -5,7 +5,7 @@ import tensorflow.contrib.rnn as rnn
 class CHAR_RNN:
     # gets time series for training
     # be careful of dealing with batch/time series
-    def __init__(self, hidden_size, n_vocab, n_layers = 3, w_init=tf.random_normal_initializer(), b_init=tf.constant_initializer(0)):
+    def __init__(self, hidden_size, n_vocab, n_layers = 3, w_init=tf.random_normal_initializer(), b_init=tf.constant_initializer(0), use_peepholes = True):
         self.n_layers = n_layers
         self.hidden_size = hidden_size
         with tf.variable_scope("CHAR_RNN", reuse=False):
@@ -14,16 +14,27 @@ class CHAR_RNN:
             self.keep_prob = tf.placeholder(tf.float32) # for dropout
             self.init_state = tf.placeholder(tf.float32, shape = (n_layers, 2, None, hidden_size))
 
+            n_batch = tf.shape(self.x)[0]
+            n_time = tf.shape(self.x)[1]
+            self.onehot_x = tf.reshape(tf.one_hot(self.x, n_vocab), [-1, n_vocab])
+
+            # embedding
+            n_embed = n_vocab / 2
+            with tf.variable_scope("embedding"):
+                self.embd_layer = {'W': tf.get_variable("W", [n_vocab, n_embed], initializer=w_init),
+                                   'b': tf.get_variable("b", [n_embed],          initializer=b_init)}
+                self.embd_x = tf.matmul(self.onehot_x, self.embd_layer['W']) + self.embd_layer['b']
+
             state_per_layer_list = tf.unstack(self.init_state, axis = 0)
             rnn_tuple_state = tuple(
                 [rnn.LSTMStateTuple(state_per_layer_list[idx][0], state_per_layer_list[idx][1])
                 for idx in range(n_layers)] )
 
             with tf.variable_scope("rnn"):
-                rnn_in = tf.one_hot(self.x, n_vocab)
+                rnn_in = tf.reshape(self.embd_x, [n_batch, n_time, n_embed])
                 cell = rnn.MultiRNNCell([
                        rnn.DropoutWrapper(
-                       rnn.LSTMCell(hidden_size, state_is_tuple=True),
+                       rnn.LSTMCell(hidden_size, state_is_tuple=True, use_peepholes=use_peepholes),
                        output_keep_prob=self.keep_prob)
                        for _ in range(n_layers)],
                        state_is_tuple=True)
