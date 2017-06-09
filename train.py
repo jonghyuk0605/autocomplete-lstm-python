@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import tensorflow as tf
 
@@ -34,13 +36,14 @@ sess.run(tf.global_variables_initializer())
 
 saver = tf.train.Saver()
 
+start_time = time.time()
 for epoch in range(args.n_epochs):
     losses = []
     n_batch = train_loader.n_batch(args.batch_size, args.seq_length)
     for idx, (batch_x, batch_y) in enumerate(train_loader.get_batch(args.batch_size, args.seq_length)):
         loss = model.run_train_op(sess, train_op, batch_x, batch_y, model.initial_rnn_state(args.batch_size))
         losses.append(loss)
-        print "Epoch {} ({} / {}), loss: {}".format(epoch, idx, n_batch, loss)
+        print "Epoch {} ({} / {}), loss: {:.4f}, elapsed time: {:.1f}s".format(epoch, idx, n_batch, loss, time.time() - start_time)
     writer.add_summary(sess.run(loss_summary, feed_dict = {loss_log: np.mean(losses)}), epoch)
 
     saver.save(sess, args.save_dir)
