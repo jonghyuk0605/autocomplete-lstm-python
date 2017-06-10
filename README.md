@@ -9,7 +9,7 @@
 * prerequisites
 
 ```
-# install requirements (anaconda, tensorflow, etc ...)
+# install requirements (python, numpy, tensorflow, java, hangul-utils etc ...)
 cd data
 ./download.sh # downloading dataset
 ```
