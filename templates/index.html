@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Demo for autocompletion</title>
+</head>
+<body>
+    <h2>Write prefix and submit</h2>
+    <form action="." method="POST">
+        <input type="text" name="text">
+        <input type="submit" name="my-form" value="submit">
+    </form>
+    {% if prefix is defined %}
+    <h2></h2>
+    <h3> Result for [{{ prefix }}] </h3>
+    <table border="1">
+    {% for str, p in result %}
+        <tr>
+            <th> {{ str }} </th>
+            <td> {{ p }} </td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+</body>
+</html>

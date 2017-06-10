@@ -30,6 +30,7 @@ python sample.py
 * Run test web server
 
 ```
+# install requirements (flask)
 python main.py
 open localhost:5000
 ```
