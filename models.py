@@ -68,7 +68,7 @@ class CHAR_RNN:
             y = np.argmax(y_prob)
         else:
             y = np.random.choice(range(n_vocab), p = y_prob)
-        return y, current_state
+        return y, current_state, y_prob
 
     def run_train_op(self, sess, train_op, batch_x, batch_y, current_state, dropout = 0.5):
         _, loss = sess.run([train_op, self.loss], feed_dict={self.x: batch_x, self.y: batch_y, self.init_state: current_state, self.keep_prob: dropout})

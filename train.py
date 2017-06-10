@@ -10,6 +10,7 @@ flags = tf.app.flags
 flags.DEFINE_string('text_modeling', 'chr', 'chr: character-based, syl: syllable')
 flags.DEFINE_string('train_dir', 'data/korean-english-park.train.ko', 'training dataset')
 flags.DEFINE_string('save_dir', 'save/model', 'training dataset')
+flags.DEFINE_string('load_dir', None, 'continue learning from this model')
 flags.DEFINE_string('log_dir', 'log', 'training dataset')
 flags.DEFINE_float('alpha', 1e-4, 'alpha for adam')
 flags.DEFINE_float('grad_clip', 5., 'gradient clip')
@@ -36,6 +37,10 @@ sess.run(tf.global_variables_initializer())
 
 saver = tf.train.Saver()
 
+if args.load_dir is not None:
+    print "Continue from {}".format(args.load_dir)
+    saver.restore(sess, args.load_dir)
+
 start_time = time.time()
 for epoch in range(args.n_epochs):
     losses = []
@@ -50,7 +55,7 @@ for epoch in range(args.n_epochs):
 
     output, x, current_state = [], train_loader.vocab.get(unichr(32)), model.initial_rnn_state(1)
     for _ in range(100):
-        x, current_state = model.sample_output(sess, x, current_state)
+        x, current_state, _ = model.sample_output(sess, x, current_state)
         output.append(x)
     output = list(map(train_loader.inv_vocab.get, output))
     print output

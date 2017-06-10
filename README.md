@@ -2,8 +2,8 @@
 
 ### Character-based LSTM
 * idea from char-rnn (https://github.com/karpathy/char-rnn), some implementation from sherjilozair's tensorflow char-rnn implementation (https://github.com/sherjilozair/char-rnn-tensorflow)
-* Korean language model (character based, ... more todo), beam search for k-top result
-* Tested on MAC OS X, Windows (in Windows, need to do script works (\*.sh) by yourself)
+* Korean language model (jamo based), beam search for k-top result
+* Tested on MAC OS X, Ubuntu 14.04
 
 ### Demo for autocompletion
 * prerequisites
@@ -14,16 +14,22 @@ cd data
 ./download.sh # downloading dataset
 ```
 
-* Train and test text generative model
+* Train text generative model
 
 ```
 python train.py
+```
+
+* Test sentence, word sampling
+
+```
+# Currently using pretrained models, changed hard-coded directories to use other model
 python sample.py
 ```
 
-* Test autocompletion algorithm
+* Run test web server
 
 ```
 python main.py
-open localhost:~
+open localhost:5000
 ```

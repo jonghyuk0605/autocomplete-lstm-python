@@ -54,23 +54,27 @@ def split_raw(raw_data, text_modeling):
     if text_modeling == 'chr':
         data = []
         for spl_data in raw_data.split():
+            data.append(u' ')
             for c in spl_data:
-                # only takes . and , and full korean syllable
-                # 0x3131 ~ 0x3163: jamos, 0xac00 ~ 0xd7a3: full character
+                # only takes . and , and korean
+                # 0x3131 ~ 0x3163: single jamos, 0xac00 ~ 0xd7a3: full character
                 if (ord(c) in ['.', ',']) or (0xac00 <= ord(c) <= 0xd7a3):
                     data.extend(split_syllables(c))
-            data.append(u' ') # delimeter
+                elif 0x3131 <= ord(c) <= 0x3163:
+                    data.append(c)
     elif text_modeling == 'syl':
         data = []
         for spl_data in raw_data.split():
+            data.append(u' ')
             for c in spl_data:
                 # only takes . and , and full korean syllable
                 # 0x3131 ~ 0x3163: jamos, 0xac00 ~ 0xd7a3: full character
                 if (ord(c) in ['.', ',']) or (0xac00 <= ord(c) <= 0xd7a3):
                     data.append(c)
-            data.append(u' ') # delimeter
     else:
         print 'Invalid text modeling'
+    if len(data) == 0:
+        data = [u' ']
     return data
 
 def join_data(data, text_modeling):
@@ -84,5 +88,4 @@ def join_data(data, text_modeling):
 
 if __name__ == "__main__":
     # test
-    #b = BatchGenerator('chr', 'data/korean-english-park.train.ko')
-    b = BatchGenerator('syl', 'data/korean-english-park.train.ko')
+    b = BatchGenerator('chr', 'data/korean-english-park.train.ko')
