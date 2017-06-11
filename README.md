@@ -1,5 +1,7 @@
 # Word Autocompletion Algorithm based on character-based LSTM
 
+* This is my school / personal project with sloppy code ...
+
 ### Character-based LSTM
 * idea from char-rnn (https://github.com/karpathy/char-rnn), some implementation from sherjilozair's tensorflow char-rnn implementation (https://github.com/sherjilozair/char-rnn-tensorflow)
 * Korean language model (jamo based), beam search for k-top result
